@@ -2,259 +2,179 @@
 
 {% block title %} Shop - Index Page {% endblock %}
 
-{% block css %} 
-  <style>
-    .col-md-3 {
-      display: inline-block;
-      margin-left: -4px;
+{% block css %}
+<style>
+  .col-md-3 {
+    display: inline-block;
+    margin-left: -4px;
+  }
+
+  .col-md-3 img {
+    /*width: 100%;*/
+    align-self: center;
+    max-width: 275px;
+    height: 242px;
+    align-items: center;
+  }
+
+  body .carousel-indicators .active {
+    background-color: black;
+  }
+
+
+  body .carousel-indicators {
+    bottom: 0;
+  }
+
+  body .no-padding {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  body .carousel-control-prev-icon,
+  body .carousel-control-next-icon {
+    background-color: rgb(198, 201, 192);
+    padding-top: 150px;
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+
+  body .carousel-indicator li{
+    background-color: blue;
+    }
+    
+  .carousel-control-prev,
+  .carousel-control-next{
+    top: auto;
+    bottom: auto;
+    padding-top: 130px;
     }
 
-    .col-md-3 img {
-      width: 100%;
-      height: auto;
-    }
-
-    body .carousel-indicators .active {
-      background-color: black;
-    }
-
-
-    body .carousel-indicators {
-      bottom: 0;
-    }
-
-    body .no-padding {
-      padding-left: 0;
-      padding-right: 0;
-    }
-
-    body .carousel-control-prev-icon,
-    body .carousel-control-next-icon {
-      background-color: yellowgreen;
-    }
-  </style>
-  {% endblock %}
   
 
-  {% block body %}
-  <!-- ------------------------------------------------------ -->
-  <!-- Carousels for showing products -->
-  <div class="container">
+</style>
+{% endblock %}
+
+
+{% block body %}
+{% load static %}
+<!-- Carousels for showing products -->
+<div class="container">
+
+  <!--Slideshow starts here -->
+  {% for product, range, nSlides in allProds %}
+
+  <h5 class="my-4">Flash Sale On {{product.0.category}} - Recommended Items</h5>
+
+  <div class="row">
     <!-- div for carousel -->
-    <div id="demo" class="carousel slide my-3" data-bs-ride="carousel">
+    <div id="demo{{forloop.counter}}" class="col carousel slide my-3" data-bs-ride="carousel">
       <!-- Indicators: These are the indicators i.e dots at the bottom -->
       <ul class="carousel-indicators">
-        <li data-bs-target="#demo" data-bs-slide-to="0" class="active"></li>
-        <li data-bs-target="#demo" data-bs-slide-to="1"></li>
-        <li data-bs-target="#demo" data-bs-slide-to="2"></li>
+        <li data-bs-target="#demo{{forloop.counter}}" data-bs-slide-to="0" class="active"></li>
+
+        {% for i in range %}
+        <li data-bs-target="#demo{{forloop.parentloop.counter}}" data-bs-slide-to={{i}}></li>
+        {% endfor %}
+
       </ul>
 
-      <!-- Slideshow starts here: Wrapper for slides -->
+      <!-- Wrapper for slides -->
       <div class="container carousel-inner no-padding">
 
         <!-- 1 carousel -->
         <div class="carousel-item active">
-          <!-- so our 1 item contain 4 cards i.e. one slide of the carousel -->
-
-          <!-- adding the card -->
-          <!-- card 1 -->
+          {% for i in product %}
           <div class="col-xs-3 col-sm-3 col-md-3">
             <div class="card" style="width: 18rem;">
-              <img src="https://source.unsplash.com/600x500/?nature,water" class="card-img-top" alt="...">
+              <img src="/media/{{i.image}}" class="card-img-top" alt="...">
               <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                  card's
-                  content.</p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
+                <h5 class="card-title">{{i.product_name|slice:'0:50'}}</h5>
+                <p class="card-text">{{i.desc|slice:'0:10'}}...</p>
+                <button id="pr{{i.id}}" class="btn btn-primary cart">Add to Cart</button>
               </div>
             </div>
           </div>
-
-          <!-- card 2 -->
-          <div class="col-xs-3 col-sm-3 col-md-3">
-            <div class="card" style="width: 18rem;">
-              <img src="https://source.unsplash.com/600x500/?nature,water" class="card-img-top" alt="...">
-              <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                  card's
-                  content.</p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
-              </div>
-            </div>
-          </div>
-
-          <!-- card 3 -->
-          <div class="col-xs-3 col-sm-3 col-md-3">
-            <div class="card" style="width: 18rem;">
-              <img src="https://source.unsplash.com/600x500/?nature,water" class="card-img-top" alt="...">
-              <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                  card's
-                  content.</p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
-              </div>
-            </div>
-          </div>
-
-          <!-- card 4 -->
-          <div class="col-xs-3 col-sm-3 col-md-3">
-            <div class="card" style="width: 18rem;">
-              <img src="https://source.unsplash.com/600x500/?nature,water" class="card-img-top" alt="...">
-              <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                  card's
-                  content.</p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
-              </div>
-            </div>
-          </div>
-
+          {% if forloop.counter|divisibleby:4 and forloop.counter > 0 and not forloop.last %}
         </div>
-
-        <!-- 2 carousel -->
         <div class="carousel-item">
-          <!-- so our 1 item contain 4 cards i.e. one slide of the carousel -->
-
-          <!-- adding the card -->
-          <!-- card 1 -->
-          <div class="col-xs-3 col-sm-3 col-md-3">
-            <div class="card" style="width: 18rem;">
-              <img src="https://source.unsplash.com/600x500/?nature,water" class="card-img-top" alt="...">
-              <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                  card's
-                  content.</p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
-              </div>
-            </div>
-          </div>
-
-          <!-- card 2 -->
-          <div class="col-xs-3 col-sm-3 col-md-3">
-            <div class="card" style="width: 18rem;">
-              <img src="https://source.unsplash.com/600x500/?nature,water" class="card-img-top" alt="...">
-              <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                  card's
-                  content.</p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
-              </div>
-            </div>
-          </div>
-
-          <!-- card 3 -->
-          <div class="col-xs-3 col-sm-3 col-md-3">
-            <div class="card" style="width: 18rem;">
-              <img src="https://source.unsplash.com/600x500/?nature,water" class="card-img-top" alt="...">
-              <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                  card's
-                  content.</p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
-              </div>
-            </div>
-          </div>
-
-          <!-- card 4 -->
-          <div class="col-xs-3 col-sm-3 col-md-3">
-            <div class="card" style="width: 18rem;">
-              <img src="https://source.unsplash.com/600x500/?nature,water" class="card-img-top" alt="...">
-              <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                  card's
-                  content.</p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
-              </div>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- 3 carousel -->
-        <div class="carousel-item">
-          <!-- so our 1 item contain 4 cards i.e. one slide of the carousel -->
-
-          <!-- adding the card -->
-          <!-- card 1 -->
-          <div class="col-xs-3 col-sm-3 col-md-3">
-            <div class="card" style="width: 18rem;">
-              <img src="https://source.unsplash.com/600x500/?nature,water" class="card-img-top" alt="...">
-              <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                  card's
-                  content.</p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
-              </div>
-            </div>
-          </div>
-
-          <!-- card 2 -->
-          <div class="col-xs-3 col-sm-3 col-md-3">
-            <div class="card" style="width: 18rem;">
-              <img src="https://source.unsplash.com/600x500/?nature,water" class="card-img-top" alt="...">
-              <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                  card's
-                  content.</p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
-              </div>
-            </div>
-          </div>
-
-          <!-- card 3 -->
-          <div class="col-xs-3 col-sm-3 col-md-3">
-            <div class="card" style="width: 18rem;">
-              <img src="https://source.unsplash.com/600x500/?nature,water" class="card-img-top" alt="...">
-              <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                  card's
-                  content.</p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
-              </div>
-            </div>
-          </div>
-
-          <!-- card 4 -->
-          <div class="col-xs-3 col-sm-3 col-md-3">
-            <div class="card" style="width: 18rem;">
-              <img src="https://source.unsplash.com/600x500/?nature,water" class="card-img-top" alt="...">
-              <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                  card's
-                  content.</p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
-              </div>
-            </div>
-          </div>
-
+          {% endif %}
+          {% endfor %}
         </div>
 
       </div> <!-- container carousel-inner no-padding -->
-
     </div> <!-- carousel slide my-3 -->
 
-  </div> <!-- Main container -->
 
-  <!-- button keep out of container so that notoverlapping the carousel -->
-  <!-- Left and right controls -->
-  <a class="carousel-control-prev" href="#demo" data-bs-slide="prev">
-    <span class="carousel-control-prev-icon" ></span>
-  </a>
-  <a class="carousel-control-next" href="#demo" data-bs-slide="next">
-    <span class="carousel-control-next-icon"></span>
-  </a>
 
-  <!-- ------------------------------------------------------ -->
-  {% endblock %}
+    <!-- button keep out of container so that notoverlapping the carousel -->
+    <!-- Left and right controls -->
+    <a class="carousel-control-prev" href="#demo{{forloop.counter}}" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon"></span>
+    </a>
+
+    <a class="carousel-control-next" href="#demo{{forloop.counter}}" data-bs-slide="next">
+      <span class="carousel-control-next-icon"></span>
+    </a>
+
+  </div> <!-- rows of container -->
+  {% endfor %}
+</div> <!-- Main container -->
+{% endblock %}
+
+
+<!-- javascript -->
+{% block js %} 
+<script>
+  console.log("Working Js..")
+
+  // Logic for creating cart Object
+  if(localStorage.getItem('cart') == null){
+    // initialize an cart object
+    var cart = {};
+  }
+  else{
+    // in localstorage the item is in string form so to parse in JSON format use JSON.parse
+    cart = JSON.parse(localStorage.getItem('cart'));
+    document.getElementById('cart').innerHTML = Object.keys(cart).length;
+  }
+
+  // logic for cart clicked button
+  cart_products = document.getElementsByClassName('cart')
+  /*for (var i = 0; i < cart_pro.length; i++) {
+    cart_pro[i].addEventListener("click", myfunc,false)
+  }*/
+
+  Array.from(cart_products).forEach(function(cart_product){
+    cart_product.addEventListener("click", myfunc)
+  })
+
+  function myfunc(event){
+    console.log("Button clicked")
+    var idStr = this.id.toString();
+    console.log(idStr); // idStr is the key and added is values
+
+    // if cart[pr5] is defined then go in if
+    if(cart[idStr] != undefined){
+      // cart[pr5] = (cart[pr5].value + 1) i.e. 1 + 1
+      cart[idStr] = cart[idStr] + 1;
+    }
+    else{
+      // cart_key = cart_value
+      cart[idStr] = 1;
+    }
+    console.log(cart);
+    localStorage.setItem('cart', JSON.stringify(cart));
+    
+    document.getElementById('cart').innerHTML = Object.keys(cart).length;
+  }
+
+
+  //popcart =document.getElementById("popcart")
+  //popcart.show()
+  document.getElementById("popcart").setAttribute('data-bs-original-title', '<h5>Cart for your items in my shopping cart</h5>');
+  document.getElementById("popcart").setAttribute('data-bs-content', 'Add your items Sale');
+  //console.log(document.getElementById("popcart")) 
+
+</script>
+{% endblock %} 
