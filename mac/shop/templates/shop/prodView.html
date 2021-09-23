@@ -1,0 +1,79 @@
+{% extends 'shop/basic.html' %}
+
+{% block title %} {{product.product_name}} {% endblock %}
+
+{% block css %}
+{% endblock %}
+
+{% block body %}
+<div class="container my-4">
+    <div class="row">
+        <div class="col-md-4">
+            <!-- Image here -->
+            <div class="row">
+                <img src="/media//{{product.image}}" alt="{{product.product_name}}"  height="385px">
+            </div>
+            <!-- Add to cart options -->
+            <div class="row">
+                <button class="col btn btn-primary my-3 mx-3">Buy Now</button>
+                <button class="col btn btn-primary my-3 mx-3">Add To Cart</button>
+            </div>   
+        </div>
+        <div class="col-md-8">
+            <h5>{{product.product_name}}</h5>
+            <p><b>Rs.{{product.price}} </b></p>
+            <hr>
+            <p>{{product.desc}}</p>
+            <!-- Add reviews system specifications of products system -->
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+
+<!-- javascript -->
+{% block js %} 
+<script>
+  console.log("Working Js..")
+
+  // Logic for creating cart Object
+  if(localStorage.getItem('cart') == null){
+    // initialize an cart object
+    var cart = {};
+  }
+  else{
+    cart = JSON.parse(localStorage.getItem('cart'));
+    document.getElementById('cart').innerHTML = Object.keys(cart).length;
+  }
+
+  // logic for cart clicked button
+  cart_products = document.getElementsByClassName('cart')
+
+  Array.from(cart_products).forEach(function(cart_product){
+    cart_product.addEventListener("click", myfunc)
+  })
+
+  function myfunc(event){
+    console.log("Button clicked")
+    var idStr = this.id.toString();
+    console.log(idStr); // idStr is the key and added is values
+
+    if(cart[idStr] != undefined){
+      cart[idStr] = cart[idStr] + 1;
+    }
+    else{
+      cart[idStr] = 1;
+    }
+    console.log(cart);
+    localStorage.setItem('cart', JSON.stringify(cart));
+    
+    document.getElementById('cart').innerHTML = Object.keys(cart).length;
+  }
+
+
+  document.getElementById("popcart").setAttribute('data-bs-original-title', '<h5>Cart for your items in my shopping cart</h5>');
+  document.getElementById("popcart").setAttribute('data-bs-content', 'Add your items Sale');
+
+</script>
+{% endblock %} 

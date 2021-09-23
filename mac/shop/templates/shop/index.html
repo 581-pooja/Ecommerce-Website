@@ -92,6 +92,7 @@
                 <h5 class="card-title">{{i.product_name|slice:'0:50'}}</h5>
                 <p class="card-text">{{i.desc|slice:'0:10'}}...</p>
                 <button id="pr{{i.id}}" class="btn btn-primary cart">Add to Cart</button>
+                <a href="/shop/products/{{i.id}}"><button id="pv{{i.id}}" class="btn btn-primary">Product View</button></a>
               </div>
             </div>
           </div>

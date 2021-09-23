@@ -39,8 +39,14 @@ def search(request):
     return render(request, 'shop/search.html')
     # return HttpResponse("Search of Shop Page!!")
 
-def productView(request):
-    return HttpResponse("Product View of Shop Page!!")
+def productView(request , myid):
+    # Fetch the products using id giving name myid
+    # since django create primary key by itself ie. id
+    product = Product.objects.filter(id = myid)
+    print(product)
+    # product passed for productView Page we wish to access : product here views.py name
+    params = {'product':product[0]}
+    return render(request, 'shop/prodView.html', params)
 
 def checkout(request):
     return render(request, 'shop/checkout.html')
