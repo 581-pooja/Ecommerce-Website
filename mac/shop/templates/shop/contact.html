@@ -4,10 +4,41 @@
 
 {% block css %}
 <style>
-    body{
-        background-color: red;
-    }
+    
 </style>
 {% endblock %}
 
-{% block body %}This is contact page {% endblock %}
+{% block body %}
+<div class="container my-3">
+    <h3>Contact Us:</h3>
+
+    <form action="/shop/contact/" method="post">
+    {% csrf_token %}
+    <!-- Name -->
+    <div class="form-group mb-3">
+        <label for="name"  class="form-label">Name</label>
+        <input type="text" class="form-control" name="name" id="name" placeholder="Enter Your Name:">
+    </div>
+    <!-- Email -->
+    <div class="form-group mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control" name="email" id="name" placeholder="Enter Your Email:">
+    </div>
+    <!-- Phone -->
+    <div class="form-group mb-3">
+        <label for="phone" class="form-label">Phone</label>
+        <input type="tel" class="form-control" name="phone" id="phone" placeholder="Enter Your Phone number:">
+    </div>
+    <!-- How may we help you? -->
+    <div class="form-group mb-3">
+        <label for="desc" class="form-label">How may we help you?</label>
+        <textarea name="desc" id="desc" cols="30" rows="10" class="form-control" placeholder="How may we help you"></textarea>
+    </div>
+    <!-- Submit button -->
+    <div class="mb-3">
+        <button type="submit" class="btn btn-success">Submit</button>
+    </div>
+    </form>
+    
+</div>
+{% endblock %}
