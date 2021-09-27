@@ -6,15 +6,16 @@
 <style>
   .col-md-3 {
     display: inline-block;
-    margin-left: -4px;
+    margin-right: -5px;
   }
 
   .col-md-3 img {
-    /*width: 100%;*/
+    /*width: 100%;
     align-self: center;
+    align-items: center;
+    */
     max-width: 275px;
     height: 242px;
-    align-items: center;
   }
 
   body .carousel-indicators .active {
@@ -39,19 +40,20 @@
     padding-right: 30px;
   }
 
-  body .carousel-indicator li{
+  body .carousel-indicator li {
     background-color: blue;
-    }
-    
+  }
+
   .carousel-control-prev,
-  .carousel-control-next{
+  .carousel-control-next {
     top: auto;
     bottom: auto;
     padding-top: 130px;
-    }
+  }
 
-  
-
+  .border-card {
+    border: 2px solid rgb(199, 197, 197);
+  }
 </style>
 {% endblock %}
 
@@ -86,13 +88,18 @@
         <div class="carousel-item active">
           {% for i in product %}
           <div class="col-xs-3 col-sm-3 col-md-3">
-            <div class="card" style="width: 18rem;">
+            <div class="card align-items-center border-card">
               <img src="/media/{{i.image}}" class="card-img-top" alt="...">
               <div class="card-body">
                 <h5 class="card-title">{{i.product_name|slice:'0:50'}}</h5>
                 <p class="card-text">{{i.desc|slice:'0:10'}}...</p>
-                <button id="pr{{i.id}}" class="btn btn-primary cart">Add to Cart</button>
-                <a href="/shop/products/{{i.id}}"><button id="pv{{i.id}}" class="btn btn-primary">Product View</button></a>
+                <!-- button Add to card -->
+                <span id="divpr{{i.id}}" class="divpr">
+                  <button id="pr{{i.id}}" class="btn btn-primary cart">Add to Cart</button>
+                </span>
+                <!-- button for Product View -->
+                <a href="/shop/products/{{i.id}}"><button id="pv{{i.id}}" class="btn btn-primary">Product
+                    View</button></a>
               </div>
             </div>
           </div>
@@ -125,57 +132,145 @@
 
 
 <!-- javascript -->
-{% block js %} 
+{% block js %}
 <script>
-  console.log("Working Js..")
 
-  // Logic for creating cart Object
-  if(localStorage.getItem('cart') == null){
+  /*
+  Functions and there descriptions:
+  add_products_cart(): this function will add the products in cart and update in local storage
+
+  total_cart_product() : this function will add the total products present in local storage and show navigation bar
+
+  update_cart(): this function will increment and decrement the cart and storage in local storage as well update in navigation
+
+  */
+
+  // Find out the cart items from localStorage
+  if (localStorage.getItem('cart') == null) {
     // initialize an cart object
     var cart = {};
   }
-  else{
+  else {
     // in localstorage the item is in string form so to parse in JSON format use JSON.parse
     cart = JSON.parse(localStorage.getItem('cart'));
-    document.getElementById('cart').innerHTML = Object.keys(cart).length;
+    // calling the function to get total cart products:
+    total_cart_product(cart)
+    updateCart(cart)
   }
 
-  // logic for cart clicked button
+  // If the add to cart button is clicked, add/increment the item
   cart_products = document.getElementsByClassName('cart')
-  /*for (var i = 0; i < cart_pro.length; i++) {
-    cart_pro[i].addEventListener("click", myfunc,false)
-  }*/
 
-  Array.from(cart_products).forEach(function(cart_product){
-    cart_product.addEventListener("click", myfunc)
+  
+  Array.from(cart_products).forEach(function (cart_product) {
+    cart_product.addEventListener("click", add_products_cart)
   })
 
-  function myfunc(event){
-    console.log("Button clicked")
+
+  //***************************************************************************************************************************
+  //***************************************************************************************************************************
+
+  // Adding products to cart
+  function add_products_cart(event) {
+    console.log("button click")
     var idStr = this.id.toString();
-    console.log(idStr); // idStr is the key and added is values
+    //console.log(idStr); // idStr is the key and added is values
 
     // if cart[pr5] is defined then go in if
-    if(cart[idStr] != undefined){
+    if (cart[idStr] != undefined) {
       // cart[pr5] = (cart[pr5].value + 1) i.e. 1 + 1
       cart[idStr] = cart[idStr] + 1;
     }
-    else{
-      // cart_key = cart_value
-      cart[idStr] = 1;
+    else {
+      cart[idStr] = 1; // cart_key = cart_value
     }
-    console.log(cart);
+    //console.log(cart);
     localStorage.setItem('cart', JSON.stringify(cart));
-    
-    document.getElementById('cart').innerHTML = Object.keys(cart).length;
+    // since i am already having cart
+    total_cart_product(cart)
+    updateCart(cart)
   }
 
+  //***************************************************************************************************************************
+  //***************************************************************************************************************************
 
-  //popcart =document.getElementById("popcart")
-  //popcart.show()
+  // total cart products in navigation bar
+  function total_cart_product(cart) {
+    cart_length = Object.keys(cart).length
+    cart_values = Object.values(cart)
+    cart_total_products = 0
+    for (var i = 0; i < cart_length; i++) {
+      cart_total_products += cart_values[i];
+    }
+    document.getElementById('cart').innerHTML = cart_total_products;
+  }
+
+  //***************************************************************************************************************************
+  //***************************************************************************************************************************
+
+
   document.getElementById("popcart").setAttribute('data-bs-original-title', '<h5>Cart for your items in my shopping cart</h5>');
-  document.getElementById("popcart").setAttribute('data-bs-content', 'Add your items Sale');
-  //console.log(document.getElementById("popcart")) 
+  //console.log(document.getElementById("popcart"))
+
+
+  //***************************************************************************************************************************
+  //***************************************************************************************************************************
+  
+  // For incrementing and decrementing the cart
+  function updateCart(cart){
+
+    for(let item in cart){
+      console.log(item)
+      document.getElementById('div' + item).innerHTML = "<button id='minus" + item + "' class='btn btn-primary minus'> - </button> <span id='val" + item + "' >" + cart[item] + "</span> <button id='plus" + item + "' class='btn btn-primary plus'> + </button>";
+    }
+
+    
+  minus = document.getElementsByClassName("minus")
+  
+  // ************ For Minus Button *****************
+  
+  Array.from(minus).forEach(function (item_minus) {
+    item_minus.addEventListener("click", ()=>{
+      console.log("Minus Clicked")
+      minus_btn_id = item_minus.id
+      span_btn_id = item_minus.parentElement.children[1].id
+      
+      cart_item_id = minus_btn_id.slice(5,)
+      cart[cart_item_id] = cart[cart_item_id]  - 1
+      cart[cart_item_id] = Math.max(0, cart[cart_item_id]);
+      console.log(cart)
+      span_btn_id.innerHTML = cart[cart_item_id] // we will have cart[cart_item_id] is value of pr1
+      updateCart(cart)
+      total_cart_product(cart)
+    })
+  })
+  
+  
+  // ************ For Plus Button *****************
+  plus = document.getElementsByClassName("plus")
+  //console.log(plus)
+  Array.from(plus).forEach(function (item_plus) {
+    item_plus.addEventListener("click", ()=>{
+      console.log("Plus Clicked")
+      minus_btn_id = item_plus.id
+      span_btn_id = item_plus.parentElement.children[1].id
+      plus_btn_id = item_plus.parentElement.children[2].id
+      cart_item_id = plus_btn_id.slice(4,)
+      cart[cart_item_id] = cart[cart_item_id] + 1
+      console.log(cart)
+      span_btn_id.innerHTML = cart[cart_item_id]
+      updateCart(cart)
+      total_cart_product(cart)
+    })
+  })
+     
+  // Adding items in local storage
+  console.log(cart)
+  localStorage.setItem('cart', JSON.stringify(cart));
+  }
+  
+  //***************************************************************************************************************************
+
 
 </script>
-{% endblock %} 
+{% endblock %}
