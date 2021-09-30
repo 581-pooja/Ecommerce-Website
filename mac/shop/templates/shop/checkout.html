@@ -3,11 +3,101 @@
 {% block title %} Checkout Page {% endblock %}
 
 {% block css %}
-<style>
-    body{
-        background-color: yellow;
-    }
-</style>
 {% endblock %}
 
-{% block body %}This is Checkout page {% endblock %}
+{% block body %}
+<div class="container">
+    <div class="col my-4">
+        <h2>Step 1 - MyCart checkout - Review Your Cart Items</h2>
+        <div >
+            <ul class="list-group" id="items">
+               
+              </ul>
+        </div>
+    </div>
+
+    <div class="col my-4">
+        <h2>Step 2 - Enter Address & Other Details</h2>
+        <form class="row g-3">
+            <!-- Name -->
+            <div class="col-md-6">
+                <label for="name" class="form-label">Name</label>
+                <input type="name" class="form-control" id="inputName" placeholder="Enter Your Name">
+            </div>
+            <!-- Email -->
+            <div class="col-md-6">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" class="form-control" id="inputEmail" placeholder="Enter Your Email">
+            </div>
+            <!-- Address 1 -->
+            <div class="col-12">
+              <label for="inputAddress" class="form-label">Address line 1</label>
+              <input type="text" class="form-control" id="inputAddress1" placeholder="Enter Your Address line 1">
+            </div>
+            <!-- Address 2 -->
+            <div class="col-12">
+              <label for="inputAddress2" class="form-label">Address line 2</label>
+              <input type="text" class="form-control" id="inputAddress2" placeholder="Enter Your Address line 2">
+            </div>
+            <!-- City -->
+            <div class="col-md-6">
+              <label for="inputCity" class="form-label">City</label>
+              <input type="text" class="form-control" id="inputCity" placeholder="Enter Your City">
+            </div>
+            <!-- State -->
+            <div class="col-md-4">
+              <label for="inputState" class="form-label">State</label>
+              <input type="text" class="form-control" id="inputState" placeholder="Enter Your State">
+            </div>
+            <!-- ZipCode -->
+            <div class="col-md-2">
+              <label for="inputZip" class="form-label">Zip</label>
+              <input type="text" class="form-control" id="inputZip" placeholder="Enter your Zip code">
+            </div>
+            <!-- Submit Button -->
+            <div class="col-12">
+              <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+          </form>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block js %}
+<script>
+  if (localStorage.getItem('cart') == null) {
+    var cart = {};
+  }
+  else {
+    cart = JSON.parse(localStorage.getItem('cart'));
+  }
+  //console.log("this is cart" , cart)
+
+  let myStr = ""
+  if(Object.entries(cart).length === 0){
+    //console.log("I am inside block")
+    myStr = "<p>Your cart is empty, please add some items before checking out ! </p>"
+    document.getElementById('items').innerHTML = myStr;
+    //console.log(myStr)
+  }
+
+  let sum = 0
+  for(item in cart){
+    let name = cart[item][1];
+    let qty = cart[item][0];
+    sum = sum + qty;
+    myNewStr = `
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+      ${name}
+      <span class="badge bg-primary rounded-pill">${qty}</span>
+    </li>
+    `;
+    myStr = myStr + myNewStr;
+    document.getElementById('cart').innerHTML = sum;
+  }
+  //console.log(myStr);
+  document.getElementById('items').innerHTML = myStr;
+
+</script>    
+{% endblock %} 
