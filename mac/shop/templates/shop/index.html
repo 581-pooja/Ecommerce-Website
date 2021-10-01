@@ -58,6 +58,10 @@
   .border-card {
     border: 2px solid rgb(199, 197, 197);
   }
+
+  .margin-bottom{
+    margin-bottom: 2px;
+  }
 </style>
 {% endblock %}
 
@@ -94,10 +98,11 @@
           {% for i in product %}
           <div class="col-xs-3 col-sm-3 col-md-3">
             <div class="card align-items-center border-card">
-              <img src="/media/{{i.image}}" class="card-img-top img-fluid" alt="...">
+              <img src="/media/{{i.image}}" id="imgpr{{i.id}}" class="card-img-top img-fluid" alt="...">
               <div class="card-body">
-                <h5 class="card-title" id="namepr{{i.id}}">{{i.product_name|slice:'0:50'}}</h5>
-                <p class="card-text">{{i.desc|slice:'0:10'}}...</p>
+                <h5 class="card-title" id="namepr{{i.id}}">{{i.product_name|slice:'0:20'}}</h5>
+                <p class="card-text margin-bottom">{{i.desc|slice:'0:20'}}...</p>
+                <b><p class="card-text" id="prizepr{{i.id}}">Rs.{{i.price}}</p></b>
                 <!-- button Add to card -->
                 <span id="divpr{{i.id}}" class="divpr">
                   <button id="pr{{i.id}}" class="btn btn-primary cart">Add to Cart</button>
@@ -191,7 +196,12 @@
     else {
       qty = 1;
       name = document.getElementById('name' + idStr).innerHTML;
-      cart[idStr] = [qty, name]; // cart_key = cart_value
+      image = document.getElementById('img' + idStr).src;
+      prize = document.getElementById('prize' + idStr).innerHTML;
+      console.log(name)
+      console.log(image)
+      console.log(prize)
+      cart[idStr] = [qty, name, image , prize]; // cart_key = cart_value
     }
     //console.log(cart);
     localStorage.setItem('cart', JSON.stringify(cart));
@@ -205,16 +215,6 @@
 
   // total cart products in navigation bar
   function total_cart_product(cart) {
-    /*
-    cart_length = Object.keys(cart).length
-    cart_values = Object.values(cart)
-    cart_total_products = 0
-    for (var i = 0; i < cart_length; i++) {
-      cart_total_products += cart_values[i];
-    }
-    document.getElementById('cart').innerHTML = cart_total_products;
-    */
-
     var sum = 0
     for(let item in cart){
       sum = sum + cart[item][0];

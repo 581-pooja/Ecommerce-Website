@@ -3,63 +3,77 @@
 {% block title %} Checkout Page {% endblock %}
 
 {% block css %}
+<style>
+  .col-md-3 img {
+    width: 300px;
+    object-fit: contain;
+  }
+</style>
 {% endblock %}
 
 {% block body %}
 <div class="container">
-    <div class="col my-4">
-        <h2>Step 1 - MyCart checkout - Review Your Cart Items</h2>
-        <div >
-            <ul class="list-group" id="items">
-               
-              </ul>
-        </div>
-    </div>
+  <div class="col my-4">
+    <h2>Step 1 - MyCart checkout - Review Your Cart Items</h2>
+    <div class="my-3">
+      <ul class="list-group" id="items">
 
-    <div class="col my-4">
-        <h2>Step 2 - Enter Address & Other Details</h2>
-        <form class="row g-3">
-            <!-- Name -->
-            <div class="col-md-6">
-                <label for="name" class="form-label">Name</label>
-                <input type="name" class="form-control" id="inputName" placeholder="Enter Your Name">
-            </div>
-            <!-- Email -->
-            <div class="col-md-6">
-              <label for="email" class="form-label">Email</label>
-              <input type="email" class="form-control" id="inputEmail" placeholder="Enter Your Email">
-            </div>
-            <!-- Address 1 -->
-            <div class="col-12">
-              <label for="inputAddress" class="form-label">Address line 1</label>
-              <input type="text" class="form-control" id="inputAddress1" placeholder="Enter Your Address line 1">
-            </div>
-            <!-- Address 2 -->
-            <div class="col-12">
-              <label for="inputAddress2" class="form-label">Address line 2</label>
-              <input type="text" class="form-control" id="inputAddress2" placeholder="Enter Your Address line 2">
-            </div>
-            <!-- City -->
-            <div class="col-md-6">
-              <label for="inputCity" class="form-label">City</label>
-              <input type="text" class="form-control" id="inputCity" placeholder="Enter Your City">
-            </div>
-            <!-- State -->
-            <div class="col-md-4">
-              <label for="inputState" class="form-label">State</label>
-              <input type="text" class="form-control" id="inputState" placeholder="Enter Your State">
-            </div>
-            <!-- ZipCode -->
-            <div class="col-md-2">
-              <label for="inputZip" class="form-label">Zip</label>
-              <input type="text" class="form-control" id="inputZip" placeholder="Enter your Zip code">
-            </div>
-            <!-- Submit Button -->
-            <div class="col-12">
-              <button type="submit" class="btn btn-primary">Submit</button>
-            </div>
-          </form>
+      </ul>
     </div>
+  </div>
+
+  <div class="col my-4">
+    <h2>Step 2 - Enter Address & Other Details</h2>
+    <form class="row g-3 my-3" method="post" action="/shop/checkout/">
+      {% csrf_token %}
+      <!-- Hidden Input for writting for json  -->
+      <input type="hidden" name="itemsJson" id="itemsJson">
+      <!-- Name -->
+      <div class="col-md-6">
+        <label for="name" class="form-label">Name</label>
+        <input type="text" class="form-control" id="name" name="name" placeholder="Enter Your Name" required>
+      </div>
+      <!-- Email -->
+      <div class="col-md-6">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="email" name="email" name="email" placeholder="Enter Your Email" required>
+      </div>
+      <!-- Address 1 -->
+      <div class="col-12">
+        <label for="address1" class="form-label">Address line 1</label>
+        <input type="text" class="form-control" id="address1" name="address1" placeholder="Enter Your Address line 1"  required>
+      </div>
+      <!-- Address 2 -->
+      <div class="col-12">
+        <label for="address2" class="form-label">Address line 2</label>
+        <input type="text" class="form-control" id="address2" name="address2" placeholder="Enter Your Address line 2">
+      </div>
+      <!-- Phone -->
+      <div class="col-12">
+        <label for="phone" class="form-label">Phone</label>
+        <input type="tel" class="form-control" id="phone" name="phone" placeholder="Enter Your Phone Number" required>
+      </div>
+      <!-- City -->
+      <div class="col-md-6">
+        <label for="city" class="form-label">City</label>
+        <input type="text" class="form-control" id="city" name="city" placeholder="Enter Your City" required>
+      </div>
+      <!-- State -->
+      <div class="col-md-4">
+        <label for="state" class="form-label">State</label>
+        <input type="text" class="form-control" id="state" name="state" placeholder="Enter Your State" required>
+      </div>
+      <!-- ZipCode -->
+      <div class="col-md-2">
+        <label for="zip_code" class="form-label">Zip</label>
+        <input type="text" class="form-control" id="zip_code" name="zip_code" placeholder="Enter your Zip code" required>
+      </div>
+      <!-- Submit Button -->
+      <div class="col-12">
+        <button type="submit" class="btn btn-primary" id="placeOrder" name="placeOrder" disabled >Place Order</button>
+      </div>
+    </form>
+  </div>
 </div>
 {% endblock %}
 
@@ -74,30 +88,52 @@
   }
   //console.log("this is cart" , cart)
 
+  if(Object.entries(cart).length !== 0){
+    //document.getElementById("popcart").setAttribute('data-bs-content', 'Cart for your items in my shopping cart');
+    document.getElementById("placeOrder").removeAttribute('disabled');
+  }
+
   let myStr = ""
-  if(Object.entries(cart).length === 0){
+  if (Object.entries(cart).length === 0) {
     //console.log("I am inside block")
     myStr = "<p>Your cart is empty, please add some items before checking out ! </p>"
     document.getElementById('items').innerHTML = myStr;
     //console.log(myStr)
   }
+  else {
 
-  let sum = 0
-  for(item in cart){
-    let name = cart[item][1];
-    let qty = cart[item][0];
-    sum = sum + qty;
-    myNewStr = `
+    let sum = 0
+    for (item in cart) {
+      let name = cart[item][1];
+      let qty = cart[item][0];
+      let image = cart[item][2];
+      let prize = cart[item][3];
+      sum = sum + qty;
+
+      myNewStr = `
     <li class="list-group-item d-flex justify-content-between align-items-center">
-      ${name}
-      <span class="badge bg-primary rounded-pill">${qty}</span>
+      <div class="row">
+        <div class="col-md-3">
+          <img src=${image} class="item-image img-fluid" alt="...">
+        </div>
+        <div class="col-md-6">
+          <p>${name}</p>
+          <p>Quantity:${qty}</p>
+          <b><p>${prize}</p></b>
+        </div>
+      </div>
     </li>
-    `;
-    myStr = myStr + myNewStr;
-    document.getElementById('cart').innerHTML = sum;
+    `
+
+      myStr = myStr + myNewStr;
+      document.getElementById('cart').innerHTML = sum;
+    }
   }
   //console.log(myStr);
+
+  document.getElementById('itemsJson').value = JSON.stringify(cart)
+
   document.getElementById('items').innerHTML = myStr;
 
-</script>    
-{% endblock %} 
+</script>
+{% endblock %}
