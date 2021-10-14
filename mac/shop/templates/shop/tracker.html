@@ -4,10 +4,79 @@
 
 {% block css %}
 <style>
-    body{
-        background-color: Green;
-    }
+
 </style>
 {% endblock %}
 
-{% block body %}This is tracker page {% endblock %}
+{% block body %}
+<div class="container">
+    <div class="col my-4">
+        <h2> Enter Your Order Id and Email address to track your order </h2>
+
+        <form action="/shop/trackerResponse/" method="post" id="trackerForm" name="trackerForm">
+            {% csrf_token %}
+            <div class="row my-3">
+                <!-- For Order ID -->
+                <div class="col-md-6">
+                    <label for="orderId" class="form-label">Order Id</label>
+                    <input type="text" class="form-control" placeholder="Enter Your Order Id" id="orderId"
+                        name="orderId" required>
+                </div>
+                <!-- For Email -->
+                <div class="col-md-6">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" placeholder="Enter Your Email Id" name="email" id="email"
+                        required>
+                </div>
+            </div>
+            <!-- Submit Button -->
+            <div class="col-12 my-3">
+                <button type="submit" class="btn btn-primary" id="updateOrder" name="updateOrder">Submit</button>
+            </div>
+        </form>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    /*
+    document.getElementById('updateOrder').addEventListener("click", (event)=>{
+        console.log("submit Clicked")
+
+        items = document.getElementById('items')
+        orderId = document.getElementById('orderId').innerHTML
+        email = document.getElementById('email').innerHTML
+
+        let formData = {
+            'orderId': orderId,
+            'email': email
+        }
+
+        const options = {
+            method: 'POST',
+            body: JSON.stringify(formData),
+            headers: {
+                "Content-type": "application/json; charset=UTF-8"
+              }  
+        }
+
+        url = 'shop/tracker/'
+        
+        fetch( url , options)
+          .then(response => response.json())
+          .then(result => {
+            console.log('Success:', result);
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+
+
+
+        event.preventDefault();
+    })
+    */
+</script>    
+{% endblock %} 

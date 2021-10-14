@@ -38,7 +38,8 @@
 
   body .carousel-control-prev-icon,
   body .carousel-control-next-icon {
-    background-color: rgb(198, 201, 192);
+    background-color: rgb(239 241 236);
+    
     padding-top: 150px;
     padding-left: 30px;
     padding-right: 30px;
@@ -81,14 +82,15 @@
     <!-- div for carousel -->
     <div id="demo{{forloop.counter}}" class="col carousel slide my-3" data-bs-ride="carousel">
       <!-- Indicators: These are the indicators i.e dots at the bottom -->
-      <ul class="carousel-indicators">
+
+      <!-- <ul class="carousel-indicators">
         <li data-bs-target="#demo{{forloop.counter}}" data-bs-slide-to="0" class="active"></li>
 
         {% for i in range %}
         <li data-bs-target="#demo{{forloop.parentloop.counter}}" data-bs-slide-to={{i}}></li>
         {% endfor %}
 
-      </ul>
+      </ul> -->
 
       <!-- Wrapper for slides -->
       <div class="container carousel-inner no-padding">
@@ -108,7 +110,7 @@
                   <button id="pr{{i.id}}" class="btn btn-primary cart">Add to Cart</button>
                 </span>
                 <!-- button for Product View -->
-                <a href="/shop/products/{{i.id}}"><button id="pv{{i.id}}" class="btn btn-primary">Product
+                <a href="/shop/products/id={{i.id}}"><button id="pv{{i.id}}" class="btn btn-primary">Product
                     View</button></a>
               </div>
             </div>
@@ -179,7 +181,6 @@
 
 
   //***************************************************************************************************************************
-  //***************************************************************************************************************************
 
   // Adding products to cart
   function add_products_cart(event) {
@@ -211,7 +212,6 @@
   }
 
   //***************************************************************************************************************************
-  //***************************************************************************************************************************
 
   // total cart products in navigation bar
   function total_cart_product(cart) {
@@ -222,43 +222,7 @@
     document.getElementById('cart').innerHTML = sum;
   }
 
-  //***************************************************************************************************************************
-  //***************************************************************************************************************************
 
-
-  //document.getElementById("popcart").setAttribute('data-bs-original-title', 'Cart for your items in my shopping cart');
-
-  //document.getElementById("popcart").setAttribute('data-bs-content', 'Cart for your items in my shopping cart');
-  //console.log(document.getElementById("popcart"))
-  updatePopover(cart)
-  /*
-  var h = document.getElementById("popcart").getAttribute("data-bs-original-title");
-  console.log(h)
-  console.log(document.getElementById("popcart").hasAttribute("data-bs-original-title"));
-  console.log(document.getElementById("popcart").setAttribute("data-bs-original-title","these are new items added"))
-  */
-
-  // add POPOVER to cart
-  function updatePopover(cart){
-    console.log("WE are inside updatePopover");
-    var popStr = "";
-    popStr = popStr + "<h5>Cart for your items in my shopping cart</h5><div class='mx-2 my-2'>"
-    var i = 1;
-      for (var item in cart){
-        popStr = popStr + "<b>" + i + "</b>.";
-        popStr = popStr + document.getElementById('name' + item).innerHTML.slice(0,12) + "..Qty::" + cart[item][0] + '<br>';
-        i = i + 1;
-      }
-    popStr = popStr + "</div>"
-    console.log(popStr);
-    //document.getElementById("popcart").setAttribute('data-bs-original-title', popStr);
-    //document.getElementById("popcart").innerText = popStr;    
-    console.log("above executed")
-  }
-
-
-
-  //***************************************************************************************************************************
   //***************************************************************************************************************************
   
   // For incrementing and decrementing the cart
@@ -268,6 +232,7 @@
       //console.log(item)
       document.getElementById('div' + item).innerHTML = "<button id='minus" + item + "' class='btn btn-primary minus'> - </button> <span id='val" + item + "' >" + cart[item][0] + "</span> <button id='plus" + item + "' class='btn btn-primary plus'> + </button>";
     }
+    
 
     
   minus = document.getElementsByClassName("minus")
@@ -283,8 +248,19 @@
       cart_item_id = minus_btn_id.slice(5,)
       cart[cart_item_id][0] = cart[cart_item_id][0]  - 1
       cart[cart_item_id][0] = Math.max(0, cart[cart_item_id][0]);
+
+      if(cart[cart_item_id][0] == 0){
+        console.log('div'+ cart_item_id)
+        cart_zero_item_id = 'div'+ cart_item_id
+        document.getElementById(cart_zero_item_id).innerHTML = `<button id=${cart_item_id} class="btn btn-primary cart">Add to Cart</button>` 
+        delete cart[cart_item_id]
+        updateCart(cart)
+        location.reload(true)
+      }
+      else{
+        span_btn_id.innerHTML = cart[cart_item_id][0] // we will have cart[cart_item_id] is value of pr1
+      }
       //console.log(cart)
-      span_btn_id.innerHTML = cart[cart_item_id][0] // we will have cart[cart_item_id] is value of pr1
       updateCart(cart)
       total_cart_product(cart)
     })
@@ -311,7 +287,6 @@
      
   // Adding items in local storage
   //console.log("Update cart returns during reloading only" , cart)
-  updatePopover(cart);
   localStorage.setItem('cart', JSON.stringify(cart));
   }
   

@@ -1,14 +1,14 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
   <!-- Required meta tags -->
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous" />
 
   <title>{% block title %} {% endblock %}</title>
 
@@ -16,9 +16,7 @@
 </head>
 
 <body>
-
   <!-- Navbar -->
-  <!-- <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top"> -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
       <a class="navbar-brand" href="#">MyCart</a>
@@ -40,15 +38,45 @@
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="/shop/contact">Contact Us</a>
           </li>
-          <!-- Tracker -->
+
+          {% if request.session.customer_id %}
+          <!-- Profile , tracker , Logout -->
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="/shop/tracker">Tracker</a>
           </li>
+
+          <!-- Logout -->
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/shop/logout">Logout</a>
+          </li>
+
+          <!-- Profile -->
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/shop/tracker">{{request.session.username}}</a>
+          </li>
+
+          {% else %}
+          <!-- Login , register -->
+
+          <!-- Register -->
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/shop/register">Register</a>
+          </li>
+
+          <!-- Login -->
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/shop/login">Login</a>
+          </li>
+          {% endif %}
+          <!-- Tracker -->
           
         </ul>
-        <form class="d-flex">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success" type="submit">Search</button>
+        <form class="d-flex" method="get" action="/shop/search/">
+          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search"
+            id="search" />
+          <button class="btn btn-outline-success" type="submit">
+            Search
+          </button>
         </form>
 
         <!-- Cart : Popover -->
@@ -60,35 +88,37 @@
           Cart{<span id="cart">0</span>}
         </button> -->
 
-        <a href="/shop/checkout"><button type="button" class="btn btn-secondary mx-2" >
-          Cart{<span id="cart">0</span>}
-        </button></a>
-
+        <a href="/shop/checkoutOrders/"><button type="button" class="btn btn-secondary mx-2">
+            Cart{<span id="cart">0</span>}
+          </button></a>
       </div>
     </div>
   </nav>
-
-  {% block body %} {% endblock %}
-
+  <!-- Dismissable Alert -->
+  {% if messages %} {% for message in messages %}
+  <div class="alert alert-{{ message.tags }} alert-dismissible fade show my-0" role="alert">
+    <strong>{{ message }}</strong>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+  {% endfor %} {% endif %} {% block body %} {% endblock %}
 
   <!-- Option 1: Bootstrap Bundle with Popper -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
     crossorigin="anonymous"></script>
 
-    <script>
-      // to initialize the popover  
-      
-      var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
-      var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
-        return new bootstrap.Popover(popoverTriggerEl)
-      })
-      
-    </script>
+  <script>
+    // to initialize the popover
 
-    {% block js %}
-    
-    {% endblock %} 
+    var popoverTriggerList = [].slice.call(
+      document.querySelectorAll('[data-bs-toggle="popover"]')
+    );
+    var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+      return new bootstrap.Popover(popoverTriggerEl);
+    });
+  </script>
+
+  {% block js %} {% endblock %}
 </body>
 
 </html>

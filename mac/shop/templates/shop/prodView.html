@@ -3,6 +3,13 @@
 {% block title %} {{product.product_name}} {% endblock %}
 
 {% block css %}
+<style>
+  .align-items-center{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+</style>
 {% endblock %}
 
 {% block body %}
@@ -11,17 +18,20 @@
         <div class="col-md-4">
             <!-- Image here -->
             <div class="row">
-                <img src="/media//{{product.image}}" alt="{{product.product_name}}"  height="385px">
+                <img id="imgpr{{product_id}}" src="/media//{{product.image}}" alt="{{product.product_name}}"  height="385px">
             </div>
             <!-- Add to cart options -->
-            <div class="row">
-                <button class="col btn btn-primary my-3 mx-3">Buy Now</button>
-                <button class="col btn btn-primary my-3 mx-3">Add To Cart</button>
+            <div class="align-items-center">
+                <!-- button Add to card -->
+                <span id="divpr{{product_id}}" class="divpr{{product_id}}">
+                  <button id="pr{{product_id}}" class="btn btn-primary cart" >Add to Cart</button>
+                </span>
             </div>   
         </div>
         <div class="col-md-8">
-            <h5>{{product.product_name}}</h5>
-            <p><b>Rs.{{product.price}} </b></p>
+            <h5 id="namepr{{product_id}}" name="namepr{{product_id}}">{{product.product_name}}</h5>
+            <!-- <h5 id="pr{{product_id}}" name="pr{{product_id}}">{{product_id}}</h5> -->
+            <h5 id="prizepr{{product_id}}">Rs.{{product.price}} </h5>
             <hr>
             <p>{{product.desc}}</p>
             <!-- Add reviews system specifications of products system -->
@@ -36,6 +46,7 @@
 {% block js %} 
 <script>
   console.log("Working Js..")
+  
 
   // Logic for creating cart Object
   if(localStorage.getItem('cart') == null){
@@ -54,26 +65,105 @@
     cart_product.addEventListener("click", myfunc)
   })
 
+  
+
+  
+// for clicking the add to cart
   function myfunc(event){
     console.log("Button clicked")
+    // to get id
     var idStr = this.id.toString();
-    console.log(idStr); // idStr is the key and added is values
+    console.log("This is the value of id",idStr); // idStr is the key and added is values
 
     if(cart[idStr] != undefined){
       cart[idStr] = cart[idStr] + 1;
+      qty = cart[idStr][0] + 1;
+      cart[idStr] = [qty, name];
     }
     else{
       cart[idStr] = 1;
+      qty = 1;
+      name = document.getElementById('name' + idStr).innerHTML;
+      image = document.getElementById('img' + idStr).src;
+      prize = document.getElementById('prize' + idStr).innerHTML;
+      cart[idStr] = [qty, name, image , prize];
+      console.log(cart)
     }
     console.log(cart);
     localStorage.setItem('cart', JSON.stringify(cart));
     
     document.getElementById('cart').innerHTML = Object.keys(cart).length;
+    //total_cart_product(cart)
+    updateCart(cart)
+  }
+  
+  updateCart(cart)
+  // For incrementing and decrementing the cart
+  function updateCart(cart){
+    //var idStr = this.id.toString();
+    url_str = String(window.location.href)
+    split_url_string = url_str.split('=')
+    console.log(split_url_string[1])
+    idStr = "pr" + split_url_string[1]
+    console.log(idStr)
+    document.getElementById('div' + idStr).innerHTML = "<button id='minus" + idStr + "' class='btn btn-primary minus'> - </button> <span id='val" + idStr + "' >" + cart[idStr][0] + "</span> <button id='plus" + idStr + "' class='btn btn-primary plus'> + </button>";
+
+     
+  minus = document.getElementsByClassName("minus")
+  
+  // ************ For Minus Button *****************
+  
+  Array.from(minus).forEach(function (item_minus) {
+    item_minus.addEventListener("click", ()=>{
+      console.log("Minus Clicked")
+      minus_btn_id = item_minus.id
+      span_btn_id = item_minus.parentElement.children[1].id
+      
+      cart_item_id = minus_btn_id.slice(5,)
+      cart[cart_item_id][0] = cart[cart_item_id][0]  - 1
+      cart[cart_item_id][0] = Math.max(0, cart[cart_item_id][0]);
+
+      if(cart[cart_item_id][0] == 0){
+        console.log('div'+ cart_item_id)
+        cart_zero_item_id = 'div'+ cart_item_id
+        document.getElementById(cart_zero_item_id).innerHTML = `<button id=${cart_item_id} class="btn btn-primary cart">Add to Cart</button>` 
+        delete cart[cart_item_id]
+        updateCart(cart)
+        location.reload(true)
+      }
+      else{
+        span_btn_id.innerHTML = cart[cart_item_id][0] // we will have cart[cart_item_id] is value of pr1
+      }
+      //console.log(cart)
+      updateCart(cart)
+    })
+  })
+  
+  
+  // ************ For Plus Button *****************
+  plus = document.getElementsByClassName("plus")
+  //console.log(plus)
+  Array.from(plus).forEach(function (item_plus) {
+    item_plus.addEventListener("click", ()=>{
+      console.log("Plus Clicked")
+      minus_btn_id = item_plus.id
+      span_btn_id = item_plus.parentElement.children[1].id
+      plus_btn_id = item_plus.parentElement.children[2].id
+      cart_item_id = plus_btn_id.slice(4,)
+      cart[cart_item_id][0] = cart[cart_item_id][0] + 1
+      //console.log(cart)
+      span_btn_id.innerHTML = cart[cart_item_id][0]
+      updateCart(cart)
+      //total_cart_product(cart)
+    })
+  })
+     
+  // Adding items in local storage
+  //console.log("Update cart returns during reloading only" , cart)
+  localStorage.setItem('cart', JSON.stringify(cart));
   }
 
-
-  document.getElementById("popcart").setAttribute('data-bs-original-title', '<h5>Cart for your items in my shopping cart</h5>');
-  document.getElementById("popcart").setAttribute('data-bs-content', 'Add your items Sale');
+  
 
 </script>
 {% endblock %} 
