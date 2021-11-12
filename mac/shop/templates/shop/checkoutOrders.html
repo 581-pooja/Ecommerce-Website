@@ -30,7 +30,7 @@
 {% endblock %}
 
 {% block body %}
-<div class="container">
+<div class="container my-3">
   <!-- Products display -->
   <div class="row" id="cartStatus">
     <!-- col1 -->
@@ -90,7 +90,6 @@
   function clearCartProducts() {
     clearCart = document.getElementById('clearCart')
     clearCart.addEventListener('click', () => {
-      console.log("Working")
       localStorage.clear();
       cart = {}
       location.reload(true)
@@ -120,8 +119,6 @@
           Your cart is empty, please add some items before checking out ! 
         </div>
         `
-
-      //console.log(myStr)
     }
     else {
 
@@ -131,7 +128,7 @@
         let qty = cart[item][0];
         let image = cart[item][2];
         let prize = cart[item][3];
-        //console.log(prize.slice(3,))
+
         totalPrize = qty * prize.slice(3,)
         sum = sum + qty;
         total = total + totalPrize

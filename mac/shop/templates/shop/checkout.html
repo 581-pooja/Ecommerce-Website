@@ -26,6 +26,24 @@
   #cartEmpty img {
     width: 500px;
   }
+
+  /* RESPONSIVE CSS
+  -------------------------------------------------- */
+
+	@media (min-width: 465px) {
+
+		/* Bump up size of carousel content */
+    .col-md-3 img {
+      background-color: 2px solid black;
+      width: 200px
+      ;
+      object-fit: contain;
+    }
+	}
+
+
+	
+  
 </style>
 {% endblock %}
 
@@ -38,7 +56,7 @@
   </div>
 
   
-<div class="container">
+<div class="container" >
 
   <!-- Display Products and Total Amount -->
   <div class="row" id="cartStatus">
@@ -48,13 +66,15 @@
       <ul class="list-group col-md-12" id="items">
       </ul>
 
-      <ul class="col-md-12 list-group mb-3">
+      <ul class="col-md-12 col-sm-8 list-group mb-3">
         <li class="list-group-item d-flex justify-content-between">
           <button type="button" class="btn btn-primary" id="clearCart" name="clearCart">Clear Cart</button>
         </li>
       </ul>
 
     </div>
+
+    <!-- <div id="printableArea"> -->
     <!-- col 2 -->
     <!-- Payment Options -->
     <div class="col-md-6">
@@ -84,6 +104,8 @@
       {% csrf_token %}
       <!-- Hidden Input for writting for json  -->
       <input type="hidden" name="itemsJson" id="itemsJson">
+      <!-- Hidden Input for writting for json  -->
+      <input type="hidden" name="productsName" id="productsName">
       <!-- Hidden Input for Amount -->
       <input type="hidden" name="amount" id="amount">
       <!-- Name -->
@@ -104,7 +126,7 @@
       <div class="col-md-6">
         <label for="email" class="form-label">Email</label>
         <input type="email" class="form-control" id="email" name="email" name="email" placeholder="Enter Your Email"
-          required>
+          required value="{{request.session.email}}" disabled>
         <!-- For InValid Feedback -->
         <div id="" class="invalid-feedback">
           incorrect Email!
@@ -196,16 +218,31 @@
       </div>
       <!-- Submit Button -->
       <div class="col-12">
-        <button type="submit" class="btn btn-primary" id="placeOrder" name="placeOrder" disabled>Place Order</button>
+        <button type="submit" class="btn btn-primary" id="placeOrder" name="placeOrder" disabled>Cash On Delivery</button>
       </div>
     </form>
   </div>
+<!-- </div> -->
 </div>
 {% endblock %}
 
 
 {% block js %}
 <script>
+
+  // for printing the checkout page
+  function printDiv(divName) {
+    var printContents = document.getElementById(divName).innerHTML;
+    var originalContents = document.body.innerHTML;
+
+    document.body.innerHTML = printContents;
+
+    window.print();
+
+    document.body.innerHTML = originalContents;
+}
+//https://stackoverflow.com/questions/16894683/how-to-print-html-content-on-click-of-a-button-but-not-the-page
+
   checkoutCartItems()
   clearCartProducts()
   removeProduct()
@@ -214,7 +251,6 @@
   function clearCartProducts() {
     clearCart = document.getElementById('clearCart')
     clearCart.addEventListener('click', () => {
-      console.log("Working")
       localStorage.clear();
       cart = {}
       location.reload(true)
@@ -240,6 +276,7 @@
     let myStr = ""
     let myTotalAmountStr = ""
     let total = 0
+    let myNewName = "" 
 
     if (Object.entries(cart).length === 0) {
 
@@ -251,7 +288,6 @@
         </div>
         `
 
-      //console.log(myStr)
     }
     else {
 
@@ -261,8 +297,7 @@
         let qty = cart[item][0];
         let image = cart[item][2];
         let prize = cart[item][3];
-        //console.log(prize.slice(3,))
-        //console.log(item)
+
         totalPrize = qty * prize.slice(3,)
         sum = sum + qty;
         total = total + totalPrize
@@ -272,7 +307,7 @@
         <li class="list-group-item d-flex justify-content-between align-items-center">
           <div class="row">
             <div class="col-md-3">
-              <img src=${image} class="item-image img-fluid" alt="...">
+              <a href="/shop/products/id=${item.slice(2,)}"><img src=${image} class="item-image img-fluid" alt="..."></a>
             </div>
             <div class="col-md-6">
               <p>${name}</p>
@@ -293,6 +328,8 @@
           `
 
         myStr = myStr + myNewStr;
+        myNewName = myNewName +  name + ",";
+        
 
         myTotalAmountStr = myTotalAmountStr + myNewTotalAmountStr;
 
@@ -303,12 +340,10 @@
        
       }
     }
-    //console.log(myStr);
-
+    document.getElementById('productsName').value = myNewName
     document.getElementById('itemsJson').value = JSON.stringify(cart)
     document.getElementById('amount').value = total;
     document.getElementById('amount').innerHTML = total;
-    //console.log(document.getElementById('amount'))
 
     document.getElementById('items').innerHTML = myStr;
     document.getElementById('totalProductsOrder').innerHTML = myTotalAmountStr;
@@ -369,7 +404,6 @@
     // username should be alphabets only
     // username should not have special characters
     let str = userName.value;
-    console.log(str)
     if (regex.test(str)) {
       userName.classList.remove('is-invalid')
       userName.classList.add('is-valid');
@@ -382,30 +416,11 @@
     }
   });
 
-  // Email Event Listener
-  email.addEventListener('blur', () => {
-    //  validate email here 
-    let regex = /^([_\-\.0-9a-zA-Z]+)@([_\-\.0-9a-zA-Z]+).([a-zA-Z]{2,7}$)/;
-    let str = email.value;
-    console.log(str)
-    if (regex.test(str)) {
-      email.classList.remove('is-invalid')
-      email.classList.add('is-valid');
-      validEmail = true;
-    }
-    else {
-      email.classList.remove('is-valid');
-      email.classList.add('is-invalid')
-      validEmail = false;
-    }
-  });
-
   // address1 Event listener
   address1.addEventListener('blur', () => {
     //  validate email here `
     let regex = /^[a-zA-Z0-9]+( [a-zA-Z',-\\/.\s]+){2,100}$/;
     let str = address1.value;
-    console.log(str)
     if (regex.test(str)) {
       address1.classList.remove('is-invalid')
       address1.classList.add('is-valid');
@@ -423,7 +438,6 @@
     //  validate email here 
     let regex = /^[0-9]{10}$/;
     let str = phone.value;
-    console.log(str)
     if (regex.test(str)) {
       phone.classList.remove('is-invalid')
       phone.classList.add('is-valid');
@@ -441,7 +455,6 @@
     //  validate email here 
     let regex = /^[a-zA-Z\s-;,'\\]{3,30}$/;
     let str = address2.value;
-    console.log(str)
     if (regex.test(str)) {
       address2.classList.remove('is-invalid')
       address2.classList.add('is-valid');
@@ -460,7 +473,6 @@
     //  validate email here 
     let regex = /^[a-zA-Z\s-]{3,20}$/;
     let str = city.value;
-    console.log(str)
     if (regex.test(str)) {
       city.classList.remove('is-invalid')
       city.classList.add('is-valid');
@@ -478,7 +490,6 @@
     //  validate email here 
     let regex = /^[a-zA-Z\s-]{3,20}$/;
     let str = state.value;
-    console.log(str)
     if (regex.test(str)) {
       state.classList.remove('is-invalid')
       state.classList.add('is-valid');
@@ -496,7 +507,6 @@
     //  validate email here 
     let regex = /^[0-9]{6}$/;
     let str = zip_code.value;
-    console.log(str)
     if (regex.test(str)) {
       zip_code.classList.remove('is-invalid')
       zip_code.classList.add('is-valid');
@@ -512,7 +522,7 @@
   // Submit Button Event listener
   let submit = document.getElementById('placeOrder');
   submit.addEventListener('click', (e) => {
-    if (validEmail && validUserName && validPhone && validAddress && validZipCode && validCity && validState) {
+    if (validUserName && validPhone && validAddress && validZipCode && validCity && validState) {
       errorMsg.style.display = 'none';
     }
     else {

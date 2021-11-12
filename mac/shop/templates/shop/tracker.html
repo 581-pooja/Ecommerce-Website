@@ -2,12 +2,6 @@
 
 {% block title %} Tracker Page {% endblock %}
 
-{% block css %}
-<style>
-
-</style>
-{% endblock %}
-
 {% block body %}
 <div class="container">
     <div class="col my-4">
@@ -25,8 +19,8 @@
                 <!-- For Email -->
                 <div class="col-md-6">
                     <label for="email" class="form-label">Email</label>
-                    <input type="email" class="form-control" placeholder="Enter Your Email Id" name="email" id="email"
-                        required>
+                    <input type="email" class="form-control" placeholder="{{request.session.email}}" name="email" id="email"
+                        disabled> 
                 </div>
             </div>
             <!-- Submit Button -->
@@ -38,45 +32,3 @@
     </div>
 </div>
 {% endblock %}
-
-{% block js %}
-<script>
-    /*
-    document.getElementById('updateOrder').addEventListener("click", (event)=>{
-        console.log("submit Clicked")
-
-        items = document.getElementById('items')
-        orderId = document.getElementById('orderId').innerHTML
-        email = document.getElementById('email').innerHTML
-
-        let formData = {
-            'orderId': orderId,
-            'email': email
-        }
-
-        const options = {
-            method: 'POST',
-            body: JSON.stringify(formData),
-            headers: {
-                "Content-type": "application/json; charset=UTF-8"
-              }  
-        }
-
-        url = 'shop/tracker/'
-        
-        fetch( url , options)
-          .then(response => response.json())
-          .then(result => {
-            console.log('Success:', result);
-          })
-          .catch(error => {
-            console.error('Error:', error);
-          });
-
-
-
-        event.preventDefault();
-    })
-    */
-</script>    
-{% endblock %} 

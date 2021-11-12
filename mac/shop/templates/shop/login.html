@@ -13,7 +13,6 @@
 
     <form method="POST" action="/shop/login/">
         {% csrf_token %}
-        <!-- <input type="hidden" name="csrfmiddlewaretoken" value="6jxdOLyc6EenafdunPtc6gt39qXZux4l7WXqu0S9M167NL15ivx031lZqpCTQRnT"> -->
 
         <div class="text-center form-group mb-4">
             <img class="mb-4" src="/static/shop/login.png" alt="Contact Us" width="150" height="150">
@@ -26,7 +25,7 @@
                 <label for="email" class="form-label">Email:</label>
                 <input type="email" name="email" class="form-control" placeholder="Email" required="" id="email">
                 <div class="invalid-feedback">
-                    Eamil is Incorrect!
+                    Email is Incorrect!
                 </div>
                 <!-- For Valid Feedback -->
                 <div class="valid-feedback">
@@ -50,14 +49,14 @@
             <button class="btn btn-lg btn-primary btn-block mt-2" id="login" name="login" type="submit">Login</button>
         </div>
     </form>
-    <p class="mt-5 mb-3 text-center text-muted">Don't have an account? <a href="/shop/register/">Sign up here</a></p>
+    <p class="mb-3 text-center text-muted"><a href="/shop/forgotPassword/">Forgot Password</a></p>
+    <p class="mb-3 text-center text-muted">Don't have an account? <a href="/shop/register/">Sign up here</a></p>
 </div>
 {% endblock %}
 
 
 {% block js %}
 <script>
-console.log('Registration From:');
 
 // Intialize the constants
 const email = document.getElementById('email');
@@ -73,19 +72,15 @@ let error = false;
 
 // Email Event Listener
 email.addEventListener('blur', ()=>{
-    console.log("email is blurred");
     //  validate email here 
     let regex = /^([_\-\.0-9a-zA-Z]+)@([_\-\.0-9a-zA-Z]+).([a-zA-Z]{2,7}$)/;
     let str = email.value;
-    console.log(str)
     if(regex.test(str)){
-        console.log('it is matched');
         email.classList.remove('is-invalid')
         email.classList.add('is-valid');
         validEmail = true;
     }
     else{
-        console.log('it is not matched');
         email.classList.remove('is-valid');
         email.classList.add('is-invalid')
         validEmail = false;
@@ -95,19 +90,18 @@ email.addEventListener('blur', ()=>{
 
 //Password Event Listener
 password.addEventListener('blur', ()=>{
-    console.log("Password is Blurred");
     // validate password here
     let regex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d][A-Za-z\d!@#$%^&*()_+]{7,19}$/;
     let str = password.value;
     // https://stackoverflow.com/questions/27938415/regex-for-password-atleast-1-letter-1-number-1-special-character-and-should
     if(regex.test(str)){
-        console.log('it is matched');
+        // Password matched
         password.classList.remove('is-invalid')
         password.classList.add('is-valid');
         validPassword = true;
     }
     else{
-        console.log('it is not matched');
+        // Password Not matched
         password.classList.remove('is-valid');
         password.classList.add('is-invalid')
         validPassword = false;
@@ -118,7 +112,6 @@ password.addEventListener('blur', ()=>{
 // Submit Button Event listener
 let login = document.getElementById('login');
 login.addEventListener('click',(e)=>{
-    console.log('You clicked the login button');
     if(validEmail && validPassword){
         errorMsg.style.display = 'none';
     }

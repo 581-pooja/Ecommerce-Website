@@ -14,10 +14,6 @@
   }
 
   .col-md-3 img {
-    /*width: 100%;
-    align-self: center;
-    align-items: center;
-    */
     max-width: 275px;
     height: 242px;
   }
@@ -82,6 +78,7 @@
 {% block body %}
 {% load static %}
 <!-- Carousels for showing products -->
+<!--     margin-left: 20px; -->
 <div class="container">
 
   <!--Slideshow starts here -->
@@ -90,7 +87,7 @@
   <!-- TODO: The heading of first carousel is not shown!! -->
   <h5 class="my-4 margin-top">Flash Sale On {{product.0.category}} - Recommended Items</h5>
 
-  <div class="row">
+  <div class="row align-items-center">
     <!-- div for carousel -->
     <div id="demo{{forloop.counter}}" class="col carousel slide my-3" data-bs-ride="carousel">
 
@@ -99,29 +96,21 @@
 
         <!-- 1 carousel -->
         <div class="carousel-item active">
-          {% for i in product %}
+          <!-- {% for i in product %} -->
           <div class="col-xs-3 col-sm-3 col-md-3">
             <div class="card align-items-center border-card">
               <a href="/shop/products/id={{i.id}}"><img src="/media/{{i.image}}" id="imgpr{{i.id}}" class="card-img-top img-fluid" alt="..."></a>
               <div class="card-body">
                 <a class="text-link" href="/shop/products/id={{i.id}}"><h5 class="card-title" id="namepr{{i.id}}">{{i.product_name|slice:'0:20'}}</h5></a>
-                <!-- <p class="card-text margin-bottom">{{i.desc|slice:'0:20'}}...</p> -->
                 <b><p class="card-text text-align-center" id="prizepr{{i.id}}">Rs.{{i.price}}</p></b>
-                <!-- button Add to card -->
-                <!-- <span id="divpr{{i.id}}" class="divpr"> -->
-                  <!-- <button id="pr{{i.id}}" class="btn btn-primary cart">Add to Cart</button> -->
-                <!-- </span> -->
-                <!-- button for Product View -->
-                <!-- <a href="/shop/products/id={{i.id}}"><button id="pv{{i.id}}" class="btn btn-primary">Product -->
-                    <!-- View</button></a> -->
               </div>
             </div>
           </div>
-          {% if forloop.counter|divisibleby:4 and forloop.counter > 0 and not forloop.last %}
+          <!-- {% if forloop.counter|divisibleby:4 and forloop.counter > 0 and not forloop.last %}
         </div>
         <div class="carousel-item">
           {% endif %}
-          {% endfor %}
+          {% endfor %} -->
         </div>
 
       </div> <!-- container carousel-inner no-padding -->
@@ -131,17 +120,34 @@
 
     <!-- button keep out of container so that notoverlapping the carousel -->
     <!-- Left and right controls -->
-    <a class="carousel-control-prev" href="#demo{{forloop.counter}}" data-bs-slide="prev">
+    <!-- <a class="carousel-control-prev" href="#demo{{forloop.counter}}" data-bs-slide="prev">
       <span class="carousel-control-prev-icon"></span>
     </a>
 
     <a class="carousel-control-next" href="#demo{{forloop.counter}}" data-bs-slide="next">
       <span class="carousel-control-next-icon"></span>
-    </a>
+    </a> -->
 
   </div> <!-- rows of container -->
-  {% endfor %}
+  {% empty %}
+  <section class="py-5 text-center container">
+    <div class="row py-lg-5">
+      <div class="col-lg-6 col-md-8 mx-auto">
+        <h1 class="fw-light">No Search Results</h1>
+        <p class="lead text-muted">Try checking your spelling or use more general terms</p>
+        <p>
+          Need help?
+          Visit the help section or contact us</p>
+        <p>
+          <a href="/shop/contact" class="btn btn-secondary my-2">Contact Us</a>
+        </p>
+      </div>
+    </div>
+  </section>
+  
+{% endfor %}
 </div> <!-- Main container -->
+
 {% endblock %}
 
 

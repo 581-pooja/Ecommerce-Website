@@ -27,6 +27,7 @@ SECRET_KEY = 'django-insecure-k(2+r0%k09cb9g=y9&p(o6c%67aq6emh(1fmqgro9vk861m@k6
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# ALLOWED_HOSTS = ['2ab5-1-186-228-239.ngrok.io']
 ALLOWED_HOSTS = []
 
 
@@ -57,7 +58,7 @@ ROOT_URLCONF = 'mac.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['mac/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
