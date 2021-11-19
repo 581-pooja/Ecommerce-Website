@@ -1,4 +1,4 @@
-# Ecommerece Website
+# E-commerce Website
 
 Problem statement : The purpose of e-commerce website is to help customers narrow down their broad ideas and enable them to finalize the products they want to purchase. A website that is optimized for smartphones , secure, navigation to products page and the shopping cart.
 
