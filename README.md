@@ -19,3 +19,4 @@ Problem statement : The purpose of e-commerce website is to help customers narro
 - CSS
 - Javascript
 - Bootstrap
+- JSON
